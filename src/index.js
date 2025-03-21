@@ -8,6 +8,7 @@ const host ="127.0.0.1"
 
 app.get('/',(req,res)=>{
     res.send("Hi This Is E-learn Backend")
+    
 })
 dbConnect()
 .then((res)=>{
