@@ -1,10 +1,10 @@
-# Node.js
+# Node.js dependencies
 node_modules/
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
+pnpm-debug.log*
 
-# Environment Files
+# Environment variables
 .env
 .env.local
 .env.*.local
@@ -15,19 +15,22 @@ logs/
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
+lerna-debug.log*
 
-# Build Output
+# Build output
 dist/
 build/
+.cache/
+.next/
 
-# Database Files
+# Database files
 *.sqlite
 *.sqlite3
 *.db
 *.db-wal
 *.db-shm
 
-# IDE Settings
+# IDE settings
 .vscode/
 .idea/
 *.suo
@@ -35,10 +38,15 @@ build/
 *.njsproj
 *.sln
 
-# OS-Specific Files
+# OS-specific files
 .DS_Store
 Thumbs.db
 
-# React Frontend
-/public/build/
-*.cache
+# Miscellaneous
+coverage/   # Code coverage reports
+.nyc_output/
+out/        # Output folder (e.g., Next.js)
+
+# Optional: Remove dependency lock files if needed
+# package-lock.json
+# yarn.lock
