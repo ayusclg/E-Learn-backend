@@ -52,4 +52,31 @@ const userReg = async(req,res)=>{
     }
 }
 
+
+const userLogin = async(req,res)=>{
+    try {
+        const {email,password} = req.body
+
+        const user = await Student.findOne({email:email})
+        if(!user){
+            return res.status(403).json({
+                message:"User Not Found"
+            })
+        }
+        const passwordCheck = await isPasswordCorrect(password)
+        if(!passwordCheck){
+            return res.status(400).json({
+                message:"Invalid Password"
+            })
+        }
+        
+    } catch (error) {
+        res.status(500).json({
+            message:"Server Error In UserLogin"
+        })
+    }
+}
+
+
+
 export {userReg}
