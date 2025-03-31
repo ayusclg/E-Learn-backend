@@ -1,11 +1,11 @@
-import { Student } from "../Models/student";
+import { Student } from "../Models/student.js";
 
-import { uploadCloud } from "../utils/Cloudinary";
+import { uploadCloud } from "../utils/Cloudinary.js";
 
 const refreshTokenGenerate = async (StudentId) => {
   try {
     const student = await Student.findById(StudentId);
-    const refreshToken = await student.genrateRefreshToken();
+    const refreshToken = await student.generateRefreshToken();
     student.refresh_token = refreshToken;
     await student.save({
       validateBeforeSave: false,
@@ -31,13 +31,15 @@ const userReg = async (req, res) => {
     const { firstName, lastName, address, email, password, school, phone } =
       req.body;
 
-    const userCheck = await User.findOne({ email: email });
+    const userCheck = await Student.findOne({ email: email });
+
     if (userCheck) {
       return res.status(404).json({
         message: "User Already Registered",
       });
     }
-    const photo = `req.file/public/Student/${req.file.filename} `;
+    const photo = `public/Student/${req.file.filename}`;
+
     if (!photo) {
       return res.status(404).json({
         message: "Photo not Found",
@@ -45,6 +47,7 @@ const userReg = async (req, res) => {
     }
 
     const inCloud = await uploadCloud(photo);
+
     const createStudent = await Student.create({
       firstName,
       lastName,
@@ -53,7 +56,7 @@ const userReg = async (req, res) => {
       school,
       email,
       password,
-      studentPhoto: inCloud.secure_url,
+      studentPhoto: inCloud.url,
     });
 
     const createdStudent = await Student.findById(createStudent._id).select(
@@ -87,7 +90,7 @@ const userLogin = async (req, res) => {
         message: "User Not Found",
       });
     }
-    const passwordCheck = await isPasswordCorrect(password);
+    const passwordCheck = await user.isPasswordCorrect(password);
     if (!passwordCheck) {
       return res.status(400).json({
         message: "Invalid Password",
@@ -108,15 +111,15 @@ const userLogin = async (req, res) => {
       httpOnly: true,
       secure: true,
     };
-    res
-      .status(200)
-      .json({
-        message: "User LoggedIn",
-        data: loggedUser,
-      })
-      .cookie("refreshtoken", refreshtoken, options)
-      .cookie("acesstoken", acesstoken, options);
+
+    res.cookie("refreshtoken", refreshtoken, options);
+    res.cookie("acesstoken", acesstoken, options);
+    res.status(200).json({
+      message: "User LoggedIn",
+      data: loggedUser,
+    });
   } catch (error) {
+    console.log("error", error);
     res.status(500).json({
       message: "Server Error In UserLogin",
     });

@@ -1,75 +1,83 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 
-const studentSchema = new mongoose.Schema({
-    firstName:{
-        type:String,
-        required:true,
+const studentSchema = new mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      required: true,
     },
-    lastName:{
-        type:String,
-        required:true,
+    lastName: {
+      type: String,
+      required: true,
     },
-    address:{
-        type:String,
-        required:true,
+    address: {
+      type: String,
+      required: true,
     },
-    phone:{
-        type:Number,
-        required:true,
+    phone: {
+      type: Number,
+      required: true,
     },
-    studentPhoto:{
-        type:String,
-        required:true
+    studentPhoto: {
+      type: String,
+      required: true,
     },
-    refresh_token:{
-        type:String,
+    refresh_token: {
+      type: String,
     },
-    email:{
-        type:String,
-        required:true
+    email: {
+      type: String,
+      required: true,
     },
-    password:{
-        type:String,
-        required:true
+    password: {
+      type: String,
+      required: true,
     },
-    school:{
-        type:String,
-        required:true
+    school: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+studentSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+studentSchema.methods.isPasswordCorrect = async function (password) {
+  return bcrypt.compare(password, this.password);
+};
+
+studentSchema.methods.generateAcessToken = async function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+      firstName: this.firstName,
+      email: this.email,
+    },
+    process.env.ACESS_TOKEN_SECRET,
+    {
+      expiresIn: process.env.ACESS_TOKEN_EXPIRY,
     }
-},{
-    timestamps:true
-})
+  );
+};
 
-studentSchema.pre("save",async function(next){
-    if(!this.isModified("password")) return next()
-this.password =await bcrypt.hash(this.password,10)
-next()
-})
-studentSchema.method.isPasswordCorrect = async function(password){
-    return bcrypt.compare(this.password,password)
-}
-
-studentSchema.method.generateAcessToken = async function (){
-    return jwt.sign({
-        _id:this._id,
-        firstName:this.firstName,
-        email:this.email,
-
-    },process.env.ACESS_TOKEN_SECRET,{
-        expiresIn:process.env.ACESS_TOKEN_EXPIRY
-    })
-}
-
-studentSchema.method.generateRefreshToken = async function (){
-    return jwt.sign({
-        _id:this._id,
-        
+studentSchema.methods.generateRefreshToken = async function () {
+  return jwt.sign(
+    {
+      _id: this._id,
     },
-    process.env.REFRESH_TOKEN_SECRET,{
-        expiresIn:process.env.REFRESH_TOKEN_EXPIRY
-    })
-}
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+    }
+  );
+};
 
-export const Student = mongoose.model("Student",studentSchema)
+export const Student = mongoose.model("Student", studentSchema);
