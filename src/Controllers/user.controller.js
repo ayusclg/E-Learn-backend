@@ -16,11 +16,11 @@ const refreshTokenGenerate = async (StudentId) => {
   }
 };
 
-const acessTokenGenerate = async (StudentId) => {
+const accessTokenGenerate = async (StudentId) => {
   try {
     const student = await Student.findById(StudentId);
-    const acessToken = await student.generateAcessToken();
-    return acessToken;
+    const accessToken = await student.generateAccessToken();
+    return accessToken;
   } catch (error) {
     console.log("error in generating acessToken", error);
   }
@@ -97,9 +97,9 @@ const userLogin = async (req, res) => {
       });
     }
 
-    const acesstoken = await acessTokenGenerate(user._id);
+    const accesstoken = await accessTokenGenerate(user._id);
     const refreshtoken = await refreshTokenGenerate(user._id);
-    if (!acesstoken || !refreshtoken) {
+    if (!accesstoken || !refreshtoken) {
       return res.status(404).json({
         message: "Token Not Found",
       });
@@ -113,7 +113,7 @@ const userLogin = async (req, res) => {
     };
 
     res.cookie("refreshtoken", refreshtoken, options);
-    res.cookie("acesstoken", acesstoken, options);
+    res.cookie("accesstoken", accesstoken, options);
     res.status(200).json({
       message: "User LoggedIn",
       data: loggedUser,
@@ -126,4 +126,24 @@ const userLogin = async (req, res) => {
   }
 };
 
-export { userReg, userLogin };
+const studentFetch = async (req, res) => {
+  try {
+    const user = await Student.findById(req.Student._id).select(
+      "-password -refresh_token"
+    );
+    if (!user) {
+      return res.status(403).json({
+        message: "User not found",
+      });
+    }
+    res.status(200).json({
+      message: "User Fetched",
+      data: user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server Error in userFetching",
+    });
+  }
+};
+export { userReg, userLogin, studentFetch };

@@ -54,16 +54,16 @@ studentSchema.methods.isPasswordCorrect = async function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-studentSchema.methods.generateAcessToken = async function () {
+studentSchema.methods.generateAccessToken = async function () {
   return jwt.sign(
     {
       _id: this._id,
       firstName: this.firstName,
       email: this.email,
     },
-    process.env.ACESS_TOKEN_SECRET,
+    process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: process.env.ACESS_TOKEN_EXPIRY,
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
     }
   );
 };
