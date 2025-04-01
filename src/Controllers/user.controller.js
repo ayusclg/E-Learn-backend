@@ -146,4 +146,32 @@ const studentFetch = async (req, res) => {
     });
   }
 };
-export { userReg, userLogin, studentFetch };
+
+const updatePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    const user = await Student.findById(req.Student._id);
+    if (!user) {
+      return res.status(404).json({
+        message: "User Not Found",
+      });
+    }
+
+    const passwordCheck = await user.isPasswordCorrect(currentPassword);
+    if (!passwordCheck) {
+      return res.status(403).json({
+        message: "Password Doesnt Match",
+      });
+    }
+    user.password = newPassword;
+    res.status(200).json({
+      message: "Password Changed",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server Error in updating password",
+    });
+  }
+};
+export { userReg, userLogin, studentFetch, updatePassword };
