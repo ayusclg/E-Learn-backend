@@ -1,7 +1,8 @@
 import Router from "express";
 import {
-  studentFetch,
   updatePassword,
+  updateUser,
+  userFetch,
   userLogin,
   userReg,
 } from "../Controllers/user.controller.js";
@@ -12,7 +13,8 @@ const router = Router();
 
 router.route("/sreg").post(Upload.single("studentPhoto"), userReg);
 router.route("/log").post(userLogin);
-router.route("/see").get(verifyToken, studentFetch);
+router.route("/see").get(verifyToken, userFetch);
 router.route("/upass").post(verifyToken, updatePassword);
+router.route("/uuser").post(verifyToken, updateUser);
 
 export default router;
