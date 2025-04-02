@@ -157,6 +157,11 @@ const updatePassword = async (req, res) => {
         message: "User Not Found",
       });
     }
+    if (currentPassword === newPassword) {
+      return res.status(400).json({
+        message: "Enter new password",
+      });
+    }
 
     const passwordCheck = await user.isPasswordCorrect(currentPassword);
     if (!passwordCheck) {
@@ -165,6 +170,10 @@ const updatePassword = async (req, res) => {
       });
     }
     user.password = newPassword;
+    user.save({
+      validateBeforeSave: false,
+    });
+
     res.status(200).json({
       message: "Password Changed",
     });
@@ -178,7 +187,7 @@ const updatePassword = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const { firstName, lastName, address, email, school, phone } = req.body;
-    
+
     const user = await Student.findByIdAndUpdate(
       req.Student._id,
       {
