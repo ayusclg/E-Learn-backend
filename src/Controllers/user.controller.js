@@ -84,7 +84,7 @@ const userLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await Student.findOne({ email: email });
+    const user = await Student.findOne({ email: email }).lean();
     if (!user) {
       return res.status(403).json({
         message: "User Not Found",
@@ -128,9 +128,9 @@ const userLogin = async (req, res) => {
 
 const userFetch = async (req, res) => {
   try {
-    const user = await Student.findById(req.Student._id).select(
-      "-password -refresh_token"
-    );
+    const user = await Student.findById(req.Student._id)
+      .select("-password -refresh_token")
+      .lean();
     if (!user) {
       return res.status(403).json({
         message: "User not found",
@@ -209,9 +209,9 @@ const updateUser = async (req, res) => {
         message: "User Not Found",
       });
     }
-    const update = await Student.findById(user._id).select(
-      "-password -refresh_token"
-    );
+    const update = await Student.findById(user._id)
+      .select("-password -refresh_token")
+      .lean();
     if (!update) {
       return res.status(400).json({
         message: "User not Updated",
@@ -228,4 +228,5 @@ const updateUser = async (req, res) => {
     });
   }
 };
+
 export { userReg, userLogin, userFetch, updatePassword, updateUser };

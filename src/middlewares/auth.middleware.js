@@ -6,7 +6,7 @@ const verifyToken = async function (req, res, next) {
     const token = req.cookies?.accesstoken;
     if (!token) {
       return res.status(401).json({
-        message: "Token not Found",
+        message: "Please LogIn",
       });
     }
 
