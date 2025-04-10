@@ -229,4 +229,47 @@ const updateUser = async (req, res) => {
   }
 };
 
-export { userReg, userLogin, userFetch, updatePassword, updateUser };
+const userLogout = async (req, res) => {
+  try {
+    const user = await Student.findByIdAndDelete(
+      req.Student._id,
+      {
+        $set: {
+          refresh_token: undefined,
+        },
+      },
+      {
+        new: true,
+      }
+    ).select("-password -refresh_token");
+    if (!user) {
+      return res.status(403).json({
+        message: "User NotFound",
+      });
+    }
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+    res
+      .status(200)
+      .json({
+        message: "UserLogOUT Successfully",
+      })
+      .clearCookie("refreshtoken", options)
+      .clearCookie("accesstoken", options);
+  } catch (error) {
+    res.status(500).json({
+      message: "Server Error In UserLogout",
+    });
+  }
+};
+
+export {
+  userReg,
+  userLogin,
+  userFetch,
+  updatePassword,
+  updateUser,
+  userLogout,
+};
