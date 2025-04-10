@@ -4,6 +4,7 @@ import {
   updateUser,
   userFetch,
   userLogin,
+  userLogout,
   userReg,
 } from "../Controllers/user.controller.js";
 import { Upload } from "../middlewares/multer.middleware.js";
@@ -16,5 +17,6 @@ router.route("/log").post(userLogin);
 router.route("/see").get(verifyToken, userFetch);
 router.route("/upass").post(verifyToken, updatePassword);
 router.route("/uuser").post(verifyToken, updateUser);
+router.route("/log").get(verifyToken, userLogout);
 
 export default router;

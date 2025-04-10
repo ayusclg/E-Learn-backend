@@ -84,7 +84,7 @@ const userLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await Student.findOne({ email: email }).lean();
+    const user = await Student.findOne({ email: email });
     if (!user) {
       return res.status(403).json({
         message: "User Not Found",
@@ -231,7 +231,7 @@ const updateUser = async (req, res) => {
 
 const userLogout = async (req, res) => {
   try {
-    const user = await Student.findByIdAndDelete(
+    const user = await Student.findByIdAndUpdate(
       req.Student._id,
       {
         $set: {
@@ -251,15 +251,14 @@ const userLogout = async (req, res) => {
       httpOnly: true,
       secure: true,
     };
-    res
-      .status(200)
-      .json({
-        message: "UserLogOUT Successfully",
-      })
-      .clearCookie("refreshtoken", options)
-      .clearCookie("accesstoken", options);
+    res.clearCookie("refreshtoken", options);
+    res.clearCookie("accesstoken", options);
+    res.status(200).json({
+      message: "UserLogOUT Successfully",
+      data: user.firstName,
+    });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       message: "Server Error In UserLogout",
     });
   }
