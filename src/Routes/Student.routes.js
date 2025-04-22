@@ -9,8 +9,13 @@ import {
 } from "../Controllers/user.controller.js";
 import { Upload } from "../middlewares/multer.middleware.js";
 import { verifyToken } from "../middlewares/auth.middleware.js";
+import Joi from "joi";
 
 const router = Router();
+
+const validateStudentSchema = Joi.object({
+  
+})
 
 router.route("/sreg").post(Upload.single("studentPhoto"), userReg);
 router.route("/log").post(userLogin);
