@@ -2,7 +2,8 @@ import express from "express";
 import dbConnect from "./database/index.js";
 import studentRoutes from "./Routes/Student.routes.js";
 import cookieParser from "cookie-parser";
-import cors from "cors"; // ✅ Fix import
+import cors from "cors";
+import adminRoutes from "./Routes/Admin.routes.js";
 
 const app = express();
 const port = 3000;
@@ -13,13 +14,14 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use(cookieParser()); // ✅ Fix function call
+app.use(cookieParser());
 
 // Routes
 app.get("/", (req, res) => {
   res.send("Hi This Is E-learn Backend");
 });
 app.use("/auth", studentRoutes);
+app.use("/admin", adminRoutes);
 
 // Database Connection
 dbConnect()
