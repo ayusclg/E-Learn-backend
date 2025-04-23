@@ -49,6 +49,12 @@ const deleteUser = async (req, res) => {
         message: "Unauthorized Access",
       });
     }
+    const isAdmin = await Student.findById(req.params._id);
+    if (isAdmin.isAdmin) {
+      return res.status(404).json({
+        message: "Admin Cant Be Deleted",
+      });
+    }
     const deleteuser = await Student.findByIdAndDelete(req.params._id);
     if (!deleteuser) {
       return res.status(401).json({
