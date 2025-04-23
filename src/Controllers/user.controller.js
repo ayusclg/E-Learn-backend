@@ -28,7 +28,7 @@ const accessTokenGenerate = async (StudentId) => {
 
 const userReg = async (req, res) => {
   try {
-    const { firstName, lastName, address, email, password, school, phone } =
+    const { firstName, lastName, address, email, password, school, phone,isAdmin } =
       req.body;
 
     const userCheck = await Student.findOne({ email: email });
@@ -56,6 +56,7 @@ const userReg = async (req, res) => {
       school,
       email,
       password,
+      isAdmin,
       studentPhoto: inCloud.url,
     });
 
