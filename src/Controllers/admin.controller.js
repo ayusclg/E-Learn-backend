@@ -71,4 +71,5 @@ const deleteUser = async (req, res) => {
     });
   }
 };
+
 export { fetchUser, deleteUser };
