@@ -72,4 +72,20 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const findUser = async (req, res) => {
+  try {
+    const users = req.query.users
+
+    const find = {}
+    if (users){
+      find.firstName = users
+    }
+    
+    const findUser = await Student.find(find)
+  } catch (error) {
+    res.status(500).json({
+      message:"Server Error In Finding User"
+    })
+  }
+}
 export { fetchUser, deleteUser };
